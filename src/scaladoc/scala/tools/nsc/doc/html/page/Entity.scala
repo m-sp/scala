@@ -176,6 +176,8 @@ trait EntityPage extends HtmlPage {
   val typeMembers =
     tpl.abstractTypes ++ tpl.aliasTypes ++ tpl.templates.filter(x => x.isTrait || x.isClass) sorted (implicitly[Ordering[MemberEntity]])
 
+  val packageMembers = tpl.templates.filter(x => x.isPackage) sorted (implicitly[Ordering[MemberEntity]])
+
   val constructors = (tpl match {
     case cls: Class => (cls.constructors: List[MemberEntity]).sorted
     case _ => Nil
@@ -284,7 +286,8 @@ trait EntityPage extends HtmlPage {
     val template: Elems = List(
      Div(id="template", elems= List(
         Div(id="allMembers", elems=
-          memsDiv("members", "Instance Constructors", constructors, "constructors")
+             memsDiv("package members", "Package Members", packageMembers, "packages")
+          ++ memsDiv("members", "Instance Constructors", constructors, "constructors")
           ++ memsDiv("types members", "Type Members", typeMembers, "types")
           ++ memsDiv("values members", "Abstract Value Members", absValueMembers)
           ++ memsDiv("values members", if (absValueMembers.isEmpty) "Value Members" else "Concrete Value Members", concValueMembers)
